@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.cx.board.config.BucketConfig;
 import com.cx.board.config.FileUploadConfig;
 import com.cx.board.entity.BoardEntity;
 import com.cx.board.entity.UserEntity;
@@ -26,16 +28,20 @@ import com.cx.board.service.BoardService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/board") 
+@RequestMapping("/board")
 public class BoardController {
 	@Autowired
 	BoardService boardService;
-
-	private final FileUploadConfig fileUploadConfig;
-
-	BoardController(FileUploadConfig fileUploadConfig) {
+	
+    private final BucketConfig bucketConfig;
+    private final AmazonS3 amazonS3;
+    private final FileUploadConfig fileUploadConfig;
+    
+    BoardController(FileUploadConfig fileUploadConfig, BucketConfig bucketConfig, AmazonS3 amazonS3) {
+		this.amazonS3 = amazonS3;
 		this.fileUploadConfig = fileUploadConfig;
-	}
+        this.bucketConfig = bucketConfig;
+    }
 
 	@PostMapping("write")
 	public String write(@RequestParam String title, @RequestParam String content, HttpSession session,
@@ -80,7 +86,7 @@ public class BoardController {
 			model.addAttribute("detail", entity.get());
 			return "detail";
 		} else {
-			return "redirect:/"; 
+			return "redirect:/";
 		}
 	}
 

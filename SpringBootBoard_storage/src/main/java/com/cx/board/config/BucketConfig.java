@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
-public class Bucketconfig {
+public class BucketConfig {
 
 	@Value("${ncp.access-key}")
 	private String accessKey;
